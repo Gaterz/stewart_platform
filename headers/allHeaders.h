@@ -12,4 +12,5 @@
 #include "mainHeaders.h"
 #include "reverseKinematics.h"
 #include "serialCom.h"
+#include "asserv.h"
 #endif /* HEADERS_ALLHEADERS_H_ */
