@@ -7,6 +7,7 @@
 
 #include "allHeaders.h"
 
+
 //constantes pour les calculs
 #define pi  3.14159
 #define deg2rad 180/pi
