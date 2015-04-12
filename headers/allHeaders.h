@@ -8,6 +8,8 @@
 #ifndef HEADERS_ALLHEADERS_H_
 #define HEADERS_ALLHEADERS_H_
 
+
+
 #include "imgRecognition.h"
 #include "mainHeaders.h"
 #include "reverseKinematics.h"

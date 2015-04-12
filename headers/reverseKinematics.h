@@ -12,7 +12,7 @@
 
 //  IN = PositionPlatforme[]= { Posx, Posy, Posz, Rotx, Roty, Rotz }
 // OUT AngleServos[]
-unsigned char setPos(float PositionPlatforme[], float AngleServos[]);
+unsigned char positionPlatforme2Anges(float PositionPlatforme[], float AngleServos[]);
 
 
 void initReverseKinematics(void);

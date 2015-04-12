@@ -39,7 +39,7 @@ float re[3][6];
 // PositionPlatforme[]= { Posx, Posy, Posz, Rotx, Roty, Rotz }
 // OUT AngleServos[]
 // Return : Nombre d'erreurs
-unsigned char setPos(float PositionPlatforme[], float AngleServos[])
+unsigned char positionPlatforme2Anges(float PositionPlatforme[], float AngleServos[])
 {
 	int i;
 	unsigned char errorcount = 0;
@@ -49,12 +49,7 @@ unsigned char setPos(float PositionPlatforme[], float AngleServos[])
 	        getmatrix(PositionPlatforme);
 	        getrxp(PositionPlatforme);
 	        theta_a[i]=getAngleServo(&i);
-	        if(i==1||i==3||i==5){
-	        	AngleServos[i] = theta_a[i];
-	        }
-	        else{
-	        	AngleServos[i] = theta_a[i];
-	        }
+	        AngleServos[i] = theta_a[i];
 	    }
 
 	    //Rajouter la gestion des erreures si l'angle est pas correcte
@@ -180,6 +175,7 @@ void getT(float pe[])
 	   T[1] = pe[1]+H[1];
 	   T[2] = pe[2]+H[2];
 }
+
 
 
 

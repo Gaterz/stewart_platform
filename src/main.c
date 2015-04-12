@@ -5,21 +5,44 @@
  *      Author: julien
  */
 
+
+#include <fcntl.h>
+#include <unistd.h>
+#include <unistd.h>
+
+
+
 #include "main.h"
+
+#define pi  3.14159
+#define DEG_TO_RAD(X) (X*pi/180.0)
 
 int main(void)
 {
-	// PositionPlatforme[]= { Posx, Posy, Posz, Rotx, Roty, Rotz }
-	float PositionPlatforme[] = {0,0,0,0.3,0,0};
+	float PositionPlatforme[] = {0,0,0,0,0,0};//= { Posx, Posy, Posz, Rotx, Roty, Rotz }
 	float AngleServos[6];
+	unsigned char AnglesFormate[6];
+	int fileDesc;
+
 	initReverseKinematics();
-	setPos(PositionPlatforme, AngleServos);
+	fileDesc = openPort("/dev/ttyACM0");
 
-	int i;
-	for(i=0;i<6;i++)
-		printf("Angle %d : %f\n",i,(AngleServos[i]*180.0)/3.14159);
+	if(fileDesc == -1)
+	{
+		printf("Impossible d'ouvrir le port !! \n");
+		return 0;
+	}
 
 
+	initPort(fileDesc, 9600);
 
-	return 0;
+	positionPlatforme2Anges(PositionPlatforme, AngleServos);
+	formatDonnees(AngleServos, AnglesFormate);
+	sendAngles(fileDesc, AnglesFormate);
+
+	usleep(200);
+
+	close(fileDesc);
+
+	return 1;
 }
