@@ -8,9 +8,9 @@
 #ifndef HEADERS_ALLHEADERS_H_
 #define HEADERS_ALLHEADERS_H_
 
+#include "asserv_module.h"
 #include "imgRecognition.h"
 #include "mainHeaders.h"
 #include "reverseKinematics.h"
 #include "serialCom.h"
-#include "asserv.h"
 #endif /* HEADERS_ALLHEADERS_H_ */
