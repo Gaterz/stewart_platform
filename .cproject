@@ -38,6 +38,9 @@
 								<option id="gnu.c.compiler.option.include.files.147367612" superClass="gnu.c.compiler.option.include.files" valueType="includeFiles">
 									<listOptionValue builtIn="false" value="/usr/include/gtk-2.0/gtk/gtkenums.h"/>
 								</option>
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.30956486" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="DEBUG_IMGRECOG"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1513164151" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool commandLinePattern="${COMMAND}  ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT}  ${INPUTS} `pkg-config --cflags --libs gtk+-2.0` " id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1437042220" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug">
