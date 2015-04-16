@@ -12,6 +12,7 @@ int thresh_saturation_min=46;
 int thresh_saturation_max=148;
 int thresh_value_min=12;
 int thresh_value_max=42;
+int gauss_size=3;
 CvCapture* capture_device=NULL;
 void init_imgrecog(int device)
 {
@@ -30,6 +31,7 @@ void init_imgrecog(int device)
 	cvCreateTrackbar("thresh_saturation_max", "screen", &thresh_saturation_max, 255,NULL);
 	cvCreateTrackbar("thresh_value_min", "screen", &thresh_value_min, 255,NULL);
 	cvCreateTrackbar("thresh_value_max", "screen", &thresh_value_max, 255,NULL);
+	cvCreateTrackbar("gauss_size", "screen", &gauss_size, 20,NULL);
 
 	#ifdef DEBUG_IMGRECOG
 	cvNamedWindow("hsv",CV_WINDOW_AUTOSIZE);
@@ -64,12 +66,14 @@ void process_recog()
 	hsv_split[1]=cvCreateImage(cvGetSize(capture_hsv), IPL_DEPTH_8U, 1);
 	hsv_split[2]=cvCreateImage(cvGetSize(capture_hsv), IPL_DEPTH_8U, 1);
 
+	cvSmooth(capture,capture,CV_GAUSSIAN,gauss_size,gauss_size,0,0);
 	cvSplit(capture_hsv,hsv_split[0],hsv_split[1],hsv_split[2],0);
 
 
 	cvInRangeS(hsv_split[0],cvScalar(thresh_hue_min,0,0,0),cvScalar(thresh_hue_max,0,0,0),hsv_split[0]);
 	cvInRangeS(hsv_split[1],cvScalar(thresh_saturation_min,0,0,0),cvScalar(thresh_saturation_max,0,0,0),hsv_split[1]);
 	cvInRangeS(hsv_split[2],cvScalar(thresh_value_min,0,0,0),cvScalar(thresh_value_max,0,0,0),hsv_split[2]);
+
 
 	cvShowImage("screen",capture);
 
@@ -84,4 +88,17 @@ void process_recog()
 	cvReleaseImage(&hsv_split[1]);
 	cvReleaseImage(&hsv_split[2]);
 	cvReleaseImage(&capture_hsv);
+}
+
+void test_img_recog()
+{
+	init_imgrecog(1);
+
+		int c;
+		while(c!=1048603) {
+			process_recog();
+			c=cvWaitKey(10);
+
+		}
+		exit_imgrecog();
 }
