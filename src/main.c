@@ -12,10 +12,6 @@
 #include <gtk/gtk.h>
 
 
-//#include <gtk/gtktypes.h>
-//#include <gtk/gtkmain.h>
-
-
 
 #include "main.h"
 
@@ -32,23 +28,20 @@ int main(int argc, char **argv)
 
 	GtkWidget *p_window = NULL;
 
-	  /* Initialisation de GTK+ */
-	  gtk_init (&argc, &argv);
+	/* Initialisation de GTK+ */
+	gtk_init (&argc, &argv);
 
-	  /* Creation de la fenetre principale de notre application */
-	  p_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	/* Creation de la fenetre principale de notre application */
+	p_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-	  /* Affichage de la fenetre principale */
-	  gtk_widget_show (p_window);
-	  /* Lancement de la boucle principale */
-	  gtk_main ();
-
-
-	  return EXIT_SUCCESS;
+	/* Affichage de la fenetre principale */
+	gtk_widget_show (p_window);
+	/* Lancement de la boucle principale */
+	gtk_main ();
 
 
 
-
+	  /*
 	initReverseKinematics();
 	fileDesc = openPort("/dev/ttyACM0");
 
@@ -58,7 +51,7 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
-/*
+
 	initPort(fileDesc, 9600);
 
 	positionPlatforme2Anges(PositionPlatforme, AngleServos);
