@@ -8,6 +8,6 @@
 #ifndef HEADERS_GUI_GTK_H_
 #define HEADERS_GUI_GTK_H_
 
-void OpenWindows(int argc,char ** argv);
+int OpenWindows(int argc,char ** argv);
 
 #endif /* HEADERS_GUI_GTK_H_ */

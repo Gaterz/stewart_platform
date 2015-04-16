@@ -7,18 +7,52 @@
 
 #include "allHeaders.h"
 
-void OpenWindows(int argc,char ** argv)
+int OpenWindows(int argc,char ** argv)
 {
-	GtkWidget *p_window = NULL;
+    GtkWidget *fenetre_principale = NULL;
+    GtkBuilder *builder = NULL;
+    GError *error = NULL;
+    gchar *filename = NULL;
 
-	/* Initialisation de GTK+ */
-	gtk_init (&argc, &argv);
+    /* Initialisation de la librairie Gtk. */
+    gtk_init(&argc, &argv);
 
-	/* Creation de la fenetre principale de notre application */
-	p_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-	/* Affichage de la fenetre principale */
-	gtk_widget_show (p_window);
-	/* Lancement de la boucle principale */
-	gtk_main ();
+    /* Ouverture du fichier Glade de la fenêtre principale */
+    builder = gtk_builder_new();
+
+
+    /* Création du chemin complet pour accéder au fichier test.glade. */
+    /* g_build_filename(); construit le chemin complet en fonction du système */
+    /* d'exploitation. ( / pour Linux et \ pour Windows) */
+
+    filename =  g_build_filename ("GUI.glade", NULL);
+
+
+    /* Chargement du fichier GUI.glade. */
+    gtk_builder_add_from_file (builder, filename, &error);
+    g_free (filename);
+
+    if (error)
+    {
+    	gint code = error->code;
+        g_printerr("%s\n", error->message);
+        g_error_free (error);
+        return code;
+    }
+
+
+
+      /* Récupération du pointeur de la fenêtre principale */
+    fenetre_principale = GTK_WIDGET(gtk_builder_get_object (builder, "window"));
+
+    /* Affectation du signal "destroy" à la fonction gtk_main_quit(); pour la */
+    /* fermeture de la fenêtre. */
+    //g_signal_connect (G_OBJECT (fenetre_principale), "destroy", (GCallback)gtk_main_quit, NULL);
+
+    /* Affichage de la fenêtre principale. */
+    gtk_widget_show_all (fenetre_principale);
+
+    gtk_main();
+    return 0;
 }
