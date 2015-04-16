@@ -5,8 +5,9 @@
  *      Author: maxime
  */
 
+#include "allHeaders.h"
 
-void Afaire()
+void OpenWindows(int argc,char ** argv)
 {
 	GtkWidget *p_window = NULL;
 

@@ -14,4 +14,5 @@
 #include "mainHeaders.h"
 #include "reverseKinematics.h"
 #include "serialCom.h"
+#include "GUI_GTK.h"
 #endif /* HEADERS_ALLHEADERS_H_ */
