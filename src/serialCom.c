@@ -86,7 +86,7 @@ void initPort(int fd, int vitesse)
 	termios_p.c_lflag = ECHO;
 
 	/* Mode RAW */
-		termios_p.c_lflag = ~ICANON;
+	termios_p.c_lflag = ~ICANON;
 
 	/* Caracteres immediatement disponibles */
 	termios_p.c_cc[VMIN] = 1;
