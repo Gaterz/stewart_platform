@@ -26,22 +26,6 @@ int main(int argc, char **argv)
 	int fileDesc;
 
 
-	GtkWidget *p_window = NULL;
-
-	/* Initialisation de GTK+ */
-	gtk_init (&argc, &argv);
-
-	/* Creation de la fenetre principale de notre application */
-	p_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-
-	/* Affichage de la fenetre principale */
-	gtk_widget_show (p_window);
-	/* Lancement de la boucle principale */
-	gtk_main ();
-
-
-
-	  /*
 	initReverseKinematics();
 	fileDesc = openPort("/dev/ttyACM0");
 
@@ -60,7 +44,7 @@ int main(int argc, char **argv)
 
 	usleep(200);
 
-	close(fileDesc);*/
+	close(fileDesc);
 
 
 
