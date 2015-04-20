@@ -9,6 +9,7 @@
 #define HEADERS_GUI_GTK_H_
 
 int OpenWindows(int argc,char ** argv);
-GtkImage *image_from_ocv(IplImage * img, int dst_w, int dst_h);
+void refreshVideo(void);
+static void destroy(GtkWidget *widget, gpointer data );
 
 #endif /* HEADERS_GUI_GTK_H_ */

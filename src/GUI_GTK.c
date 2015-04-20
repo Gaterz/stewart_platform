@@ -20,63 +20,61 @@ GtkWidget * table1=NULL;
 GtkBuilder *builder = NULL;
 GError *error = NULL;
 gchar *filename = NULL;
-IplImage *ocv_image;
+
 CvCapture * cap;
-GdkPixbuf* pix;
-void presse1()
+
+
+void refreshVideo()
 {
+	GtkImage *gtkImg1 = NULL;
+	GtkImage *gtkImg2 = NULL;
+	GdkPixbuf* pix_Video1;
+	GdkPixbuf* pix_Video2;
+	IplImage *ocv_image_Video1;
+	IplImage *ocv_image_Video2;
 
-	printf("presse\n");
-
-
-	GtkImage *imageSansTraitement = NULL;
-
-	ocv_image = cvQueryFrame(cap);
-
-	cvShowImage("hsv",ocv_image);
+	//Image utilisées
+	ocv_image_Video1 = cvQueryFrame(cap);
+	ocv_image_Video2 = cvCloneImage(ocv_image_Video1);
 
 	//Recuperation du Winget
-	imageSansTraitement = GTK_IMAGE(gtk_builder_get_object (builder,"SansTraitement"));
+	gtkImg1 = GTK_IMAGE(gtk_builder_get_object (builder,"Video1"));
+	gtkImg2 = GTK_IMAGE(gtk_builder_get_object (builder,"Video2"));
+
 	//Clear de l'image
-	gtk_image_clear(imageSansTraitement);
+	gtk_image_clear(gtkImg1);
+	gtk_image_clear(gtkImg2);
 
-
-	//Charger image avec OCV
-	//ocv_image = cvLoadImage( "test.jpg", CV_LOAD_IMAGE_UNCHANGED);
-
-	// Convert OCV image to GTK image
-	//imageSansTraitement = image_from_ocv(ocv_image, 300, 300);
-
-	cvCvtColor( ocv_image, ocv_image, CV_BGR2RGB );
-	   pix = gdk_pixbuf_new_from_data(( guchar* )ocv_image->imageData,
+	//OCV image to GTK image
+	cvCvtColor( ocv_image_Video1, ocv_image_Video1, CV_BGR2RGB );
+	pix_Video1 = gdk_pixbuf_new_from_data(( guchar* )ocv_image_Video1->imageData,
 	                                             GDK_COLORSPACE_RGB,
 	                                             FALSE,
-	                                             ocv_image->depth,
-	                                             ocv_image->width,
-	                                             ocv_image->height,
-	                                             ( ocv_image->widthStep ),
+												 ocv_image_Video1->depth,
+												 ocv_image_Video1->width,
+												 ocv_image_Video1->height,
+	                                             ( ocv_image_Video1->widthStep ),
 	                                             NULL, NULL);
 
-	   gtk_image_set_from_pixbuf(imageSansTraitement,pix);
-	   /*gdk_draw_pixbuf( imageSansTraitementwindow,
-	                    widget->style->fg_gc[ GTK_WIDGET_STATE( widget )],
-	                    pix,
-	                    0, 0, 0, 0,
-	                    opencvImage->width,
-	                    opencvImage->height,
-	                    GDK_RGB_DITHER_MAX,
-	                    0, 0);*/
+	cvCvtColor( ocv_image_Video2, ocv_image_Video2, CV_BGR2RGB );
+	pix_Video2 = gdk_pixbuf_new_from_data(( guchar* )ocv_image_Video2->imageData,
+			                                     GDK_COLORSPACE_RGB,
+			                                     FALSE,
+												 ocv_image_Video2->depth,
+												 ocv_image_Video2->width,
+												 ocv_image_Video2->height,
+			                                     ( ocv_image_Video2->widthStep ),
+			                                     NULL, NULL);
 
+	//Maj des buffer videos
+	gtk_image_set_from_pixbuf(gtkImg1,pix_Video1);
+	gtk_image_set_from_pixbuf(gtkImg2,pix_Video2);
 
+	//Affichage des nouvelles images
+	gtk_widget_show(GTK_IMAGE(gtkImg1));
+	gtk_widget_show(GTK_IMAGE(gtkImg2));
 
-	//gtk_image_set_from_file(GTK_IMAGE(imageSansTraitement), "test.jpg");
-
-	gtk_widget_show(GTK_IMAGE(imageSansTraitement));
-
-
-
-
-
+	usleep(0); //Ne fonctionne pas sans ...
 }
 
 
@@ -95,8 +93,6 @@ int OpenWindows(int argc,char ** argv)
 				}
 
 
-
-
     // Ouverture du fichier Glade de la fenêtre principale
     builder = gtk_builder_new();
 
@@ -104,7 +100,6 @@ int OpenWindows(int argc,char ** argv)
     // Création du chemin complet pour accéder au fichier test.glade.
     // g_build_filename(); construit le chemin complet en fonction du système
     // d'exploitation. ( / pour Linux et \ pour Windows)
-
     filename =  g_build_filename ("GUI.glade", NULL);
 
 
@@ -122,16 +117,16 @@ int OpenWindows(int argc,char ** argv)
 
     gtk_builder_connect_signals (builder, NULL);
 
-      // Récupération du pointeur de la fenêtre principale
+     // Récupération du pointeur de la fenêtre principale
     fenetre_principale = GTK_WIDGET(gtk_builder_get_object (builder, "window"));
-
-
 
     // Affichage de la fenêtre principale.
     gtk_widget_show_all (fenetre_principale);
 
+
     gtk_main();
-    printf("ggggggggggggggggg");
+
+    //Close webcam
     cvReleaseCapture(&cap);
     return 0;
 
@@ -144,17 +139,6 @@ static void destroy(GtkWidget *widget, gpointer data )
 {
     gtk_main_quit ();
 }
-
-
-GtkImage *image_from_ocv(IplImage * img, int dst_w, int dst_h)
-{
-    GdkPixbuf *pix_src, *pix_dst;
-    pix_src = gdk_pixbuf_new_from_data((guchar*)img->imageData, GDK_COLORSPACE_RGB, FALSE,8, img->width, img->height, img->widthStep, NULL, NULL);
-    pix_dst = gdk_pixbuf_scale_simple(pix_src, dst_w, dst_h, GDK_INTERP_BILINEAR);
-    GtkImage *image = (GtkImage*)gtk_image_new_from_pixbuf (pix_dst);
-    return image;
-}
-
 
 
 
