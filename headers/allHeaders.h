@@ -9,7 +9,7 @@
 #define HEADERS_ALLHEADERS_H_
 
 
-
+#include "asserv_module.h"
 #include "imgRecognition.h"
 #include "mainHeaders.h"
 #include "reverseKinematics.h"
