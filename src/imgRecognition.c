@@ -68,6 +68,7 @@ void process_recog() {
 	IplImage* hsv_split[3];
 	IplImage* endRecog;
 	IplImage* capture = cvQueryFrame(capture_device);
+	cvSetImageROI(capture, cvRect(110, 40, 410,385));
 	IplImage* capture_hsv = cvCreateImage(cvGetSize(capture), capture->depth,
 			capture->nChannels);
 
