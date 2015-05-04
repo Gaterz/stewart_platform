@@ -11,6 +11,7 @@
 int main(void)
 {
 
+	test_img_recog();
 	return 0;
 }
 

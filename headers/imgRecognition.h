@@ -17,8 +17,8 @@ typedef struct coords{
 	int y;
 }coords;
 
-CvCapture* init_imgrecog(int device);
+void init_imgrecog(int device);
 void exit_imgrecog();
-void process_recog();
+void process_recog(int*x, int*y);
 void test_img_recog();
 #endif /* HEADERS_IMGRECOGNITION_H_ */

@@ -5,14 +5,14 @@
  *      Author: julien
  */
 
-#include "mainHeaders.h"
-int thresh_hue_min = 75;
-int thresh_hue_max = 90;
-int thresh_saturation_min = 46;
-int thresh_saturation_max = 148;
-int thresh_value_min = 12;
-int thresh_value_max = 42;
-int gauss_size = 3;
+#include "allHeaders.h"
+int thresh_hue_min = 0;
+int thresh_hue_max = 255;
+int thresh_saturation_min = 4;
+int thresh_saturation_max = 85;
+int thresh_value_min = 0;
+int thresh_value_max = 79;
+int gauss_size =16;
 CvCapture* capture_device = NULL;
 void init_imgrecog(int device) {
 	CvCapture * cap = cvCaptureFromCAM(device);
@@ -56,7 +56,7 @@ void exit_imgrecog() {
 	cvDestroyWindow("end_recog");
 #endif
 }
-void process_recog() {
+void process_recog(int *x, int*y) {
 	CvMemStorage *storage;
 	int i;
 
@@ -119,6 +119,8 @@ void process_recog() {
 
 			cvMoments(largestContour, &mom1, 0);
 			CvPoint center = cvPoint(mom1.m10 / mom1.m00, mom1.m01 / mom1.m00);
+			*x=center.x-110-205+118;
+			*y=center.y-40-193+50;
 			cvCircle(capture, center, 4, cvScalar(255, 49, 0, 255), 1, 8, 0);
 		}
 	}
@@ -143,8 +145,31 @@ void test_img_recog() {
 	init_imgrecog(1);
 
 	int c;
+	int x=0;
+	int y=0;
+	int delta_x=0;
+	int delta_y=0;
+	int last_x=0;
+	int last_y=0;
+	float position[]={0,0,0,0,0,0};
+	float angles[6];
+	unsigned char tempo[6];
+	initReverseKinematics();
+	formatDonnees(angles,tempo);
+	int serial= openPort("/dev/ttyACM0");
+	initPort(serial, 9600);
 	while (c != 1048603) {
-		process_recog();
+		process_recog(&x,&y);
+		delta_x=x-last_x;
+		delta_y=y-last_y;
+		last_x=x;
+		last_y=y;
+		position[4]=-(float)(x/2500.0+delta_x/100.0);
+		position[3]=(float)(y/2500.0+delta_y/100.0);
+		printf("x : %d y : %d\n",x,y);
+		positionPlatforme2Anges(position, angles);
+		formatDonnees(angles,tempo);
+		sendAngles(serial, tempo);
 		c = cvWaitKey(10);
 
 	}
