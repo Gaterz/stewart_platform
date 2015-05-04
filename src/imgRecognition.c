@@ -56,9 +56,8 @@ void exit_imgrecog() {
 	cvDestroyWindow("end_recog");
 #endif
 }
-void process_recog() {
+void process_recog(int *x, int*y) {
 	CvMemStorage *storage;
-	int i;
 
 	storage = cvCreateMemStorage(0);
 	CvSeq *contours = 0;
@@ -119,6 +118,8 @@ void process_recog() {
 
 			cvMoments(largestContour, &mom1, 0);
 			CvPoint center = cvPoint(mom1.m10 / mom1.m00, mom1.m01 / mom1.m00);
+			*x=center.x-110-205+118;
+			*y=center.y-40-193+50;
 			cvCircle(capture, center, 4, cvScalar(255, 49, 0, 255), 1, 8, 0);
 		}
 	}
@@ -142,9 +143,9 @@ void process_recog() {
 void test_img_recog() {
 	init_imgrecog(1);
 
-	int c;
+	int c,x,y;
 	while (c != 1048603) {
-		process_recog();
+		process_recog(&x,&y);
 		c = cvWaitKey(10);
 
 	}
