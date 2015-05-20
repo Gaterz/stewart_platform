@@ -5,14 +5,14 @@
  *      Author: julien
  */
 
-#include "mainHeaders.h"
-int thresh_hue_min = 75;
-int thresh_hue_max = 90;
-int thresh_saturation_min = 46;
-int thresh_saturation_max = 148;
-int thresh_value_min = 12;
-int thresh_value_max = 42;
-int gauss_size = 3;
+#include "allHeaders.h"
+int thresh_hue_min = 0;
+int thresh_hue_max = 255;
+int thresh_saturation_min = 4;
+int thresh_saturation_max = 85;
+int thresh_value_min = 0;
+int thresh_value_max = 79;
+int gauss_size = 16;
 CvCapture* capture_device = NULL;
 void init_imgrecog(int device) {
 	CvCapture * cap = cvCaptureFromCAM(device);
@@ -144,8 +144,37 @@ void test_img_recog() {
 	init_imgrecog(1);
 
 	int c,x,y;
+	x=y=0;
+	Corrector corx;
+	Corrector cory;
+	Mode_Asserv(MODE_STOP,&corx);
+	Mode_Asserv(MODE_STOP,&cory);
+	corx.P_PID=4;//6
+	corx.I_PID=0;
+	corx.D_PID=130;//140
+	cory.P_PID=4;//6
+	cory.I_PID=0;
+	cory.D_PID=130;//140
+	AsservVarsType comm_x,comm_y;
+	float position[]={0,0,0,0,0,0};
+	float angles[6];
+	unsigned char tempo[6];
+	initReverseKinematics();
+	formatDonnees(angles,tempo);
+	int serial= openPort("/dev/ttyACM0");
+	initPort(serial, 9600);
+	Mode_Asserv(MODE_PD,&corx);
+		Mode_Asserv(MODE_PD,&cory);
 	while (c != 1048603) {
 		process_recog(&x,&y);
+		Gestion_Corrector(&corx,0,x,&comm_x);
+		Gestion_Corrector(&cory,0,y,&comm_y);
+		position[4]=(float)(comm_x/10000.0);
+		position[3]=-(float)(comm_y/10000.0);
+		printf("x : %d y : %d comm_x : %ld comm_y : %ld\n",x,y,comm_x,comm_y);
+		positionPlatforme2Anges(position, angles);
+		formatDonnees(angles,tempo);
+		sendAngles(serial, tempo);
 		c = cvWaitKey(10);
 
 	}
