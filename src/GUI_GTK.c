@@ -11,15 +11,22 @@
 
 void gtk_main_quit()
 {
-	return;
-
+	gtk_main_quit ();
 }
 
-GtkWidget *fenetre_principale = NULL;
-GtkWidget * table1=NULL;
-GtkBuilder *builder = NULL;
-GError *error = NULL;
-gchar *filename = NULL;
+typedef struct Window
+{
+	GtkWidget *fenetre_principale;
+	GtkBuilder *builder;
+	GError *error;
+	gchar *filename;
+} s_Window;
+
+s_Window Windows;
+
+
+
+
 
 CvCapture * cap;
 
@@ -38,8 +45,8 @@ void refreshVideo()
 	ocv_image_Video2 = cvCloneImage(ocv_image_Video1);
 
 	//Recuperation du Winget
-	gtkImg1 = GTK_IMAGE(gtk_builder_get_object (builder,"Video1"));
-	gtkImg2 = GTK_IMAGE(gtk_builder_get_object (builder,"Video2"));
+	gtkImg1 = GTK_IMAGE(gtk_builder_get_object (Windows.builder,"Video1"));
+	gtkImg2 = GTK_IMAGE(gtk_builder_get_object (Windows.builder,"Video2"));
 
 	//Clear de l'image
 	gtk_image_clear(gtkImg1);
@@ -80,9 +87,8 @@ void refreshVideo()
 
 int OpenWindows(int argc,char ** argv)
 {
+
 	gtk_init(&argc, &argv);
-	//init_imgrecog(0);
-	//process_recog();
 
     // Initialisation de la librairie Gtk.
 	cap =cvCaptureFromCAM(0);
@@ -94,34 +100,35 @@ int OpenWindows(int argc,char ** argv)
 
 
     // Ouverture du fichier Glade de la fenêtre principale
-    builder = gtk_builder_new();
+    Windows.builder = gtk_builder_new();
 
 
     // Création du chemin complet pour accéder au fichier test.glade.
     // g_build_filename(); construit le chemin complet en fonction du système
     // d'exploitation. ( / pour Linux et \ pour Windows)
-    filename =  g_build_filename ("GUI.glade", NULL);
+    Windows.filename =  g_build_filename ("GUI.glade", NULL);
 
 
     // Chargement du fichier GUI.glade.
-    gtk_builder_add_from_file (builder, filename, &error);
-    g_free (filename);
+    gtk_builder_add_from_file (Windows.builder, Windows.filename, &(Windows.error));
+    g_free (Windows.filename);
 
-    if (error)
+    if (Windows.error)
     {
-    	gint code = error->code;
-        g_printerr("%s\n", error->message);
-        g_error_free (error);
+    	gint code = (Windows.error)->code;
+        g_printerr("%s\n", (Windows.error)->message);
+        g_error_free (Windows.error);
         return code;
     }
 
-    gtk_builder_connect_signals (builder, NULL);
+    gtk_builder_connect_signals (Windows.builder, NULL);
 
      // Récupération du pointeur de la fenêtre principale
-    fenetre_principale = GTK_WIDGET(gtk_builder_get_object (builder, "window"));
+    Windows.fenetre_principale = GTK_WIDGET(gtk_builder_get_object (Windows.builder, "window"));
+    //fenetre_principale = GTK_WIDGET(gtk_builder_get_object (builder, "window"));
 
     // Affichage de la fenêtre principale.
-    gtk_widget_show_all (fenetre_principale);
+    gtk_widget_show_all (Windows.fenetre_principale);
 
 
     gtk_main();
@@ -135,12 +142,6 @@ int OpenWindows(int argc,char ** argv)
 
 
 
-static void destroy(GtkWidget *widget, gpointer data )
-{
-    gtk_main_quit ();
-}
-
-
 
 
 void ggg(GtkRange *scale, gpointer  data )
@@ -152,7 +153,7 @@ void ggg(GtkRange *scale, gpointer  data )
 
 
 	   printf("%f\n",(float)val);
-	   //g_print( "%f\n", val );
+	   g_print( "%f\n", val );
 	   /*-------------------------------------------------*/
 }
 

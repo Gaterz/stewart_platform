@@ -10,6 +10,6 @@
 
 int OpenWindows(int argc,char ** argv);
 void refreshVideo(void);
-static void destroy(GtkWidget *widget, gpointer data );
+void gtk_main_quit();
 
 #endif /* HEADERS_GUI_GTK_H_ */
