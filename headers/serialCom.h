@@ -13,6 +13,6 @@ void closePort(int fd);
 void initPort(int fd, int vitesse);
 int sendAngles(int fd, unsigned char anglesFormate[]);
 void formatDonnees(float nFormate[], unsigned char Formate[]);
-
-
+void inputfifo(unsigned char c);
+void checkdata();
 #endif /* HEADERS_SERIALCOM_H_ */
