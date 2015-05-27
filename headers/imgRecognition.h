@@ -17,6 +17,17 @@ typedef struct coords{
 	int y;
 }coords;
 
+typedef struct recog_param{
+	int thresh_hue_min;
+	int thresh_hue_max;
+	int thresh_saturation_min;
+	int thresh_saturation_max;
+	int thresh_value_min;
+	int thresh_value_max;
+	int gauss_size;
+}recog_param;
+
+extern recog_param recog_params;
 void init_imgrecog(int device);
 void exit_imgrecog();
 void process_recog(int *x, int*y);

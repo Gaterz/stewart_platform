@@ -6,15 +6,18 @@
  */
 
 #include "allHeaders.h"
-int thresh_hue_min = 0;
-int thresh_hue_max = 255;
-int thresh_saturation_min = 4;
-int thresh_saturation_max = 85;
-int thresh_value_min = 0;
-int thresh_value_max = 79;
-int gauss_size = 16;
+recog_param recog_params;
 CvCapture* capture_device = NULL;
 void init_imgrecog(int device) {
+
+	recog_params.gauss_size=16;
+	recog_params.thresh_hue_max=255;
+	recog_params.thresh_hue_min=0;
+	recog_params.thresh_saturation_max=85;
+	recog_params.thresh_saturation_min=4;
+	recog_params.thresh_value_max=79;
+	recog_params.thresh_value_min=0;
+
 	CvCapture * cap = cvCaptureFromCAM(device);
 	if (cap == NULL) {
 		perror("unable to open cam");
@@ -23,17 +26,17 @@ void init_imgrecog(int device) {
 	capture_device = cap;
 
 	cvNamedWindow("screen", CV_WINDOW_AUTOSIZE);
-	cvCreateTrackbar("thresh_hue_min", "screen", &thresh_hue_min, 255, NULL);
-	cvCreateTrackbar("thresh_hue_max", "screen", &thresh_hue_max, 255, NULL);
-	cvCreateTrackbar("thresh_saturation_min", "screen", &thresh_saturation_min,
+	cvCreateTrackbar("thresh_hue_min", "screen", &(recog_params.thresh_hue_min), 255, NULL);
+	cvCreateTrackbar("thresh_hue_max", "screen", &(recog_params.thresh_hue_max), 255, NULL);
+	cvCreateTrackbar("thresh_saturation_min", "screen", &(recog_params.thresh_saturation_min),
 			255, NULL);
-	cvCreateTrackbar("thresh_saturation_max", "screen", &thresh_saturation_max,
+	cvCreateTrackbar("thresh_saturation_max", "screen", &(recog_params.thresh_saturation_max),
 			255, NULL);
-	cvCreateTrackbar("thresh_value_min", "screen", &thresh_value_min, 255,
+	cvCreateTrackbar("thresh_value_min", "screen", &(recog_params.thresh_value_min), 255,
 	NULL);
-	cvCreateTrackbar("thresh_value_max", "screen", &thresh_value_max, 255,
+	cvCreateTrackbar("thresh_value_max", "screen", &(recog_params.thresh_value_max), 255,
 	NULL);
-	cvCreateTrackbar("gauss_size", "screen", &gauss_size, 20, NULL);
+	cvCreateTrackbar("gauss_size", "screen", &(recog_params.gauss_size), 20, NULL);
 
 #ifdef DEBUG_IMGRECOG
 	cvNamedWindow("hsv", CV_WINDOW_AUTOSIZE);
@@ -71,8 +74,8 @@ void process_recog(int *x, int*y) {
 	IplImage* capture_hsv = cvCreateImage(cvGetSize(capture), capture->depth,
 			capture->nChannels);
 
-	cvSmooth(capture, capture, CV_GAUSSIAN, gauss_size * 2 + 1,
-			gauss_size * 2 + 1, 0, 0);
+	cvSmooth(capture, capture, CV_GAUSSIAN, recog_params.gauss_size * 2 + 1,
+			recog_params.gauss_size * 2 + 1, 0, 0);
 
 	cvCvtColor(capture, capture_hsv, CV_RGB2HSV);
 
@@ -83,12 +86,12 @@ void process_recog(int *x, int*y) {
 
 	cvSplit(capture_hsv, hsv_split[0], hsv_split[1], hsv_split[2], 0);
 
-	cvInRangeS(hsv_split[0], cvScalar(thresh_hue_min, 0, 0, 0),
-			cvScalar(thresh_hue_max, 0, 0, 0), hsv_split[0]);
-	cvInRangeS(hsv_split[1], cvScalar(thresh_saturation_min, 0, 0, 0),
-			cvScalar(thresh_saturation_max, 0, 0, 0), hsv_split[1]);
-	cvInRangeS(hsv_split[2], cvScalar(thresh_value_min, 0, 0, 0),
-			cvScalar(thresh_value_max, 0, 0, 0), hsv_split[2]);
+	cvInRangeS(hsv_split[0], cvScalar(recog_params.thresh_hue_min, 0, 0, 0),
+			cvScalar(recog_params.thresh_hue_max, 0, 0, 0), hsv_split[0]);
+	cvInRangeS(hsv_split[1], cvScalar(recog_params.thresh_saturation_min, 0, 0, 0),
+			cvScalar(recog_params.thresh_saturation_max, 0, 0, 0), hsv_split[1]);
+	cvInRangeS(hsv_split[2], cvScalar(recog_params.thresh_value_min, 0, 0, 0),
+			cvScalar(recog_params.thresh_value_max, 0, 0, 0), hsv_split[2]);
 	cvAnd(hsv_split[0], hsv_split[1], endRecog, NULL);
 	cvAnd(endRecog, hsv_split[2], endRecog, NULL);
 
