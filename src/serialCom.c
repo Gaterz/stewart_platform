@@ -22,7 +22,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-
+unsigned char buffer_receive[5];
+unsigned char pos_joystick_x=128;
+unsigned char pos_joystick_y=128;
+unsigned char boutton_joystick=0;
 
 int openPort(char link[])
 {
@@ -122,3 +125,30 @@ int sendAngles(int fd, unsigned char anglesFormate[])
 		return 0;
 }
 
+void get_data(int fd)
+{
+	char c;
+	if(read(fd,&c,1))
+	{
+		inputfifo(c);
+		checkdata();
+	}
+}
+void inputfifo(unsigned char c)
+{
+	buffer_receive[0]=buffer_receive[1];
+	buffer_receive[1]=buffer_receive[2];
+	buffer_receive[2]=buffer_receive[3];
+	buffer_receive[3]=buffer_receive[4];
+	buffer_receive[4]=c;
+}
+
+void checkdata()
+{
+	if(buffer_receive[0]==0x5A && buffer_receive[4]==0xA5)
+	{
+		pos_joystick_x=buffer_receive[1];
+		pos_joystick_y=buffer_receive[2];
+		boutton_joystick=buffer_receive[3];
+	}
+}
