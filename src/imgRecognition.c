@@ -146,8 +146,10 @@ void process_recog(int *x, int*y) {
 void test_img_recog() {
 	init_imgrecog(1);
 
-	int c,x,y;
-	x=y=0;
+	int c;
+	coords coord;
+	coord.x=0;
+	coord.y=0;
 	Corrector corx;
 	Corrector cory;
 	Mode_Asserv(MODE_STOP,&corx);
@@ -169,17 +171,22 @@ void test_img_recog() {
 	Mode_Asserv(MODE_PD,&corx);
 		Mode_Asserv(MODE_PD,&cory);
 	while (c != 1048603) {
-		process_recog(&x,&y);
-		Gestion_Corrector(&corx,0,x,&comm_x);
-		Gestion_Corrector(&cory,0,y,&comm_y);
+		process_recog(&(coord.x),&(coord.y));
+		Gestion_Corrector(&corx,(128-pos_joystick_x),coord.x,&comm_x);
+		Gestion_Corrector(&cory,(128-pos_joystick_y),coord.y,&comm_y);
 		position[4]=(float)(comm_x/10000.0);
 		position[3]=-(float)(comm_y/10000.0);
-		printf("x : %d y : %d comm_x : %ld comm_y : %ld\n",x,y,comm_x,comm_y);
+		//printf("x : %d y : %d comm_x : %ld comm_y : %ld\n",coord.x,coord.y,comm_x,comm_y);
 		positionPlatforme2Anges(position, angles);
 		formatDonnees(angles,tempo);
 		sendAngles(serial, tempo);
 		c = cvWaitKey(10);
+		get_data(serial);
 
 	}
 	exit_imgrecog();
+}
+void gestion_joystick()
+{
+
 }

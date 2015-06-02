@@ -92,7 +92,7 @@ void initPort(int fd, int vitesse)
 	termios_p.c_lflag = ~ICANON;
 
 	/* Caracteres immediatement disponibles */
-	termios_p.c_cc[VMIN] = 1;
+	termios_p.c_cc[VMIN] = 0;
 	termios_p.c_cc[VTIME] = 0;
 
 	/* Sauvegarde des nouveaux parametres */
@@ -127,10 +127,10 @@ int sendAngles(int fd, unsigned char anglesFormate[])
 
 void get_data(int fd)
 {
-	char c;
-	if(read(fd,&c,1))
+	char c[2];
+	while(read(fd,c,1)==1)
 	{
-		inputfifo(c);
+		inputfifo(c[0]);
 		checkdata();
 	}
 }

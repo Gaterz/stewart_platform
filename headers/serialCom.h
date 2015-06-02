@@ -15,4 +15,8 @@ int sendAngles(int fd, unsigned char anglesFormate[]);
 void formatDonnees(float nFormate[], unsigned char Formate[]);
 void inputfifo(unsigned char c);
 void checkdata();
+void get_data(int fd);
+extern unsigned char pos_joystick_x;
+extern unsigned char pos_joystick_y;
+extern unsigned char boutton_joystick;
 #endif /* HEADERS_SERIALCOM_H_ */
