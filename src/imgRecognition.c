@@ -11,11 +11,11 @@ CvCapture* capture_device = NULL;
 void init_imgrecog(int device) {
 
 	recog_params.gauss_size=16;
-	recog_params.thresh_hue_max=255;
+	recog_params.thresh_hue_max=81;
 	recog_params.thresh_hue_min=0;
-	recog_params.thresh_saturation_max=85;
+	recog_params.thresh_saturation_max=64;
 	recog_params.thresh_saturation_min=4;
-	recog_params.thresh_value_max=79;
+	recog_params.thresh_value_max=89;
 	recog_params.thresh_value_min=0;
 
 	CvCapture * cap = cvCaptureFromCAM(device);
@@ -142,7 +142,7 @@ void process_recog(int *x, int*y) {
 	cvReleaseImage(&capture_hsv);
 	cvReleaseImage(&endRecog);
 }
-
+int time_rot=0;
 void test_img_recog() {
 	init_imgrecog(1);
 
@@ -172,8 +172,17 @@ void test_img_recog() {
 		Mode_Asserv(MODE_PD,&cory);
 	while (c != 1048603) {
 		process_recog(&(coord.x),&(coord.y));
+		if(time_rot%1024>512)
+		{
+		Gestion_Corrector(&corx,(int)(sin(time_rot/10.0)*60.0),coord.x,&comm_x);
+		Gestion_Corrector(&cory,(int)(cos(time_rot/10.0)*60.0),coord.y,&comm_y);
+		}
+		else
+		{
 		Gestion_Corrector(&corx,(128-pos_joystick_x),coord.x,&comm_x);
 		Gestion_Corrector(&cory,(128-pos_joystick_y),coord.y,&comm_y);
+		}
+		printf("%d\n",time_rot);
 		position[4]=(float)(comm_x/10000.0);
 		position[3]=-(float)(comm_y/10000.0);
 		//printf("x : %d y : %d comm_x : %ld comm_y : %ld\n",coord.x,coord.y,comm_x,comm_y);
@@ -181,6 +190,7 @@ void test_img_recog() {
 		formatDonnees(angles,tempo);
 		sendAngles(serial, tempo);
 		c = cvWaitKey(10);
+		time_rot++;
 		get_data(serial);
 
 	}
